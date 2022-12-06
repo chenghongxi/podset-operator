@@ -172,10 +172,11 @@ func (r *PodSetReconciler) createPod(ctx context.Context, namespace string, temp
 	if err = r.Create(ctx, pod); err != nil {
 		if apierrors.HasStatusCause(err, corev1.NamespaceTerminatingCause) {
 			// TODO: 打印个事件
+			r.Recorder.Event(pod, corev1.EventTypeWarning, "create pod fail", err.Error())
 		}
 		return err
 	}
-
+	r.Recorder.Event(pod, corev1.EventTypeNormal, "create pod successful", "create pod successful -1")
 	return nil
 }
 
